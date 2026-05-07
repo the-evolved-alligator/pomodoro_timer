@@ -1,0 +1,16 @@
+node_modules/
+dist/
+
+# Local env files (never commit secrets)
+.env
+.env.*
+
+# OS / editor noise
+.DS_Store
+.idea/
+.vscode/
+
+# Tooling caches
+.eslintcache
+coverage/
+*.log
