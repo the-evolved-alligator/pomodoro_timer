@@ -31,15 +31,42 @@ body {
   transition: background 300ms ease;
 }
 
-.app[data-phase='focus'] {
-  background: radial-gradient(1200px 700px at 30% 20%, rgba(167, 243, 208, 0.18), transparent 55%),
-    radial-gradient(900px 600px at 80% 90%, rgba(56, 189, 248, 0.12), transparent 60%), #07101f;
+.app[data-mode='ready'] {
+  background:
+    radial-gradient(1100px 700px at 25% 20%, rgba(148, 163, 184, 0.12), transparent 60%),
+    radial-gradient(900px 620px at 80% 85%, rgba(99, 102, 241, 0.08), transparent 64%),
+    linear-gradient(180deg, #070b14 0%, #0a1020 60%, #070b14 100%);
 }
 
-.app[data-phase='shortBreak'],
-.app[data-phase='longBreak'] {
-  background: radial-gradient(1200px 700px at 30% 20%, rgba(251, 113, 133, 0.16), transparent 55%),
-    radial-gradient(900px 600px at 80% 90%, rgba(245, 158, 11, 0.10), transparent 60%), #130b10;
+.app[data-mode='running'][data-phase='focus'] {
+  background:
+    radial-gradient(1100px 700px at 18% 18%, rgba(34, 211, 238, 0.16), transparent 58%),
+    radial-gradient(900px 620px at 85% 85%, rgba(16, 185, 129, 0.16), transparent 62%),
+    radial-gradient(700px 420px at 60% 35%, rgba(99, 102, 241, 0.10), transparent 60%),
+    linear-gradient(180deg, #050b16 0%, #061227 60%, #050b16 100%);
+}
+
+.app[data-mode='running'][data-phase='shortBreak'],
+.app[data-mode='running'][data-phase='longBreak'] {
+  background:
+    radial-gradient(1100px 700px at 18% 18%, rgba(251, 191, 36, 0.16), transparent 58%),
+    radial-gradient(900px 620px at 85% 85%, rgba(244, 63, 94, 0.14), transparent 62%),
+    radial-gradient(720px 440px at 55% 35%, rgba(168, 85, 247, 0.09), transparent 60%),
+    linear-gradient(180deg, #14070c 0%, #1a0b16 60%, #14070c 100%);
+}
+
+.app[data-mode='paused'] {
+  background:
+    radial-gradient(1100px 700px at 18% 18%, rgba(148, 163, 184, 0.10), transparent 60%),
+    radial-gradient(900px 620px at 85% 85%, rgba(148, 163, 184, 0.08), transparent 64%),
+    linear-gradient(180deg, #0a0f1a 0%, #0a1426 60%, #0a0f1a 100%);
+}
+
+.app[data-mode='ringing'] {
+  background:
+    radial-gradient(900px 540px at 20% 25%, rgba(251, 113, 133, 0.22), transparent 60%),
+    radial-gradient(900px 620px at 80% 85%, rgba(34, 211, 238, 0.18), transparent 64%),
+    linear-gradient(180deg, #1a070f 0%, #0b1220 55%, #1a070f 100%);
 }
 
 .shell {

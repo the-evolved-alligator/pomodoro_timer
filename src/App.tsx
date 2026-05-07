@@ -149,7 +149,7 @@ export default function App() {
     return () => window.clearInterval(id)
   }, [model.state])
 
-  const phaseForUi: Phase = model.state.phase === 'idle' ? 'focus' : model.state.phase
+  const phaseForUi: Phase = model.state.phase
 
   useRepeatingBeep(model.state.soundIsRinging)
 
@@ -207,9 +207,16 @@ export default function App() {
 
   const canAcknowledge = model.state.soundIsRinging || (!model.state.isRunning && model.state.remainingSeconds === 0 && model.state.phase !== 'idle')
   const canStop = model.state.phase !== 'idle' || model.state.isRunning || model.state.remainingSeconds > 0 || model.state.soundIsRinging
+  const modeForUi = model.state.soundIsRinging
+    ? 'ringing'
+    : model.state.phase === 'idle'
+      ? 'ready'
+      : model.state.isRunning
+        ? 'running'
+        : 'paused'
 
   return (
-    <div className="app" data-phase={phaseForUi} aria-label="Pomodoro Timer">
+    <div className="app" data-phase={phaseForUi} data-mode={modeForUi} aria-label="Pomodoro Timer">
       <div className="shell">
         <div className="topbar">
           <div className="title">Pomodoro</div>
