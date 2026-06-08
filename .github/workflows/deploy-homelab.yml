@@ -12,11 +12,11 @@ jobs:
 
       - name: Build
         run: |
-          docker run --rm \
-            -v "${GITHUB_WORKSPACE}:/repo" \
+          sg docker -c "docker run --rm \
+            -v \"${GITHUB_WORKSPACE}:/repo\" \
             -w /repo \
             node:22-bookworm-slim \
-            bash -lc 'npm ci && npm run build'
+            bash -lc 'npm ci && npm run build'"
 
       - name: Publish
         run: |
