@@ -9,10 +9,17 @@ jobs:
     runs-on: [self-hosted, homelab]
     steps:
       - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Clean prior build artifacts
+        run: |
+          sg docker -c "docker run --rm -v \"${GITHUB_WORKSPACE}:/repo\" alpine:3.20 \
+            sh -c 'rm -rf /repo/dist /repo/node_modules'"
 
       - name: Build
         run: |
-          sg docker -c "docker run --rm --user $(id -u):$(id -g) \
+          sg docker -c "docker run --rm --user $(id -u):$(id -g) -e HOME=/tmp \
             -v \"${GITHUB_WORKSPACE}:/repo\" \
             -w /repo \
             node:22-bookworm-slim \
