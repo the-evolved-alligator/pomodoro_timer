@@ -1,0 +1,26 @@
+name: Deploy to homelab
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, homelab]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/repo" \
+            -w /repo \
+            node:22-bookworm-slim \
+            bash -lc 'npm ci && npm run build'
+
+      - name: Publish
+        run: |
+          DEST="/srv/homelab/data/websites/pomodoro"
+          rm -rf "${DEST:?}"/*
+          mkdir -p "$DEST"
+          cp -a dist/. "$DEST/"
