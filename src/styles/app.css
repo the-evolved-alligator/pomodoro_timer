@@ -23,8 +23,14 @@ body {
   color: var(--text);
 }
 
-.app {
+#root {
   min-height: 100%;
+}
+
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   place-items: center;
