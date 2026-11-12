@@ -9,6 +9,16 @@ import {
   type Settings
 } from './lib/pomodoroMachine'
 import { loadSettings, loadState, saveSettings, saveState } from './lib/storage'
+import { MusicMode } from './music/MusicMode'
+
+type Mode = 'normal' | 'music'
+
+const MUSIC_PATH = /^\/music(\/|$)/
+
+function modeFromPath(): Mode {
+  return MUSIC_PATH.test(window.location.pathname) ? 'music' : 'normal'
+}
+
 
 function formatMmSs(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60)
@@ -111,6 +121,20 @@ function useRepeatingBeep(isRinging: boolean) {
 
 export default function App() {
   const [hydrated, setHydrated] = useState(false)
+  const [mode, setMode] = useState<Mode>(modeFromPath)
+  const pro = /^\/music\/pro\/?$/.test(window.location.pathname)
+
+  const switchMode = (next: Mode) => {
+    setMode(next)
+    const path = next === 'music' ? '/music/' : '/'
+    if (window.location.pathname !== path && !(next === 'music' && pro)) window.history.replaceState(null, '', path)
+  }
+
+  useEffect(() => {
+    const onPop = () => setMode(modeFromPath())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
 
   const initialModel: Model = useMemo(() => {
     const now = Date.now()
@@ -155,7 +179,7 @@ export default function App() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.code !== 'Space') return
+      if (e.code !== 'Space' || mode === 'music') return
       if (isEditableTarget(e.target)) return
       e.preventDefault()
       const nowMs = Date.now()
@@ -179,7 +203,7 @@ export default function App() {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [model.settings, model.state])
+  }, [mode, model.settings, model.state])
 
   const nowMs = Date.now()
   const primaryLabel = model.state.soundIsRinging
@@ -220,13 +244,23 @@ export default function App() {
       <div className="shell">
         <div className="topbar">
           <div className="title">Pomodoro</div>
+          <div className="modeSwitch" role="group" aria-label="Mode">
+            <button className={mode === 'normal' ? 'on' : ''} aria-pressed={mode === 'normal'} onClick={() => switchMode('normal')}>
+              Timer
+            </button>
+            <button className={mode === 'music' ? 'on' : ''} aria-pressed={mode === 'music'} onClick={() => switchMode('music')}>
+              Music
+            </button>
+          </div>
           <div className="phasePill">
             {phaseLabel(model.state.phase)}
             {model.state.soundIsRinging ? ' • ringing' : ''}
           </div>
         </div>
 
-        <div className="content">
+        {mode === 'music' && <MusicMode pro={pro} />}
+
+        <div className="content" style={mode === 'music' ? { display: 'none' } : undefined}>
           <div className="timer" aria-live="polite">
             {model.state.isRunning
               ? formatMmSs(Math.max(0, Math.round((model.state.endsAtMs! - nowMs) / 1000)))
